@@ -24,8 +24,8 @@ npm install -g aws-iac-gen
 Or install from source:
 
 ```bash
-git clone https://github.com/yourusername/iac-generator.git
-cd iac-generator
+git clone https://github.com/krzmknt/aws-iac-gen.git
+cd aws-iac-gen
 npm install
 npm run build
 npm link
@@ -46,6 +46,7 @@ npm link
 Download AWS resources from a scan.
 
 Options:
+
 - `--new-scan` - Start a new resource scan
 - `--from-scan` - Choose from existing scans
 - `-o, --output <file>` - Output file name (default: `resources.json`)
@@ -68,6 +69,7 @@ iac-gen resources --new-scan -o my-resources.json
 Generate a CloudFormation template from resources.
 
 Options:
+
 - `-i, --input <file>` - Input resources file (default: `resources.json`)
 - `-o, --output <file>` - Output template file (default: `template.json`)
 - `--from-stack <stack>` - Use an existing stack as the template base
@@ -88,16 +90,19 @@ iac-gen template --from-stack my-existing-stack
 ## Workflow Example
 
 1. **Scan for resources**:
+
    ```bash
    iac-gen resources --new-scan
    ```
 
 2. **Review the resources** (optional):
+
    ```bash
    cat resources.json | jq '.[] | .ResourceType' | sort | uniq -c
    ```
 
 3. **Generate CloudFormation template**:
+
    ```bash
    iac-gen template
    ```
@@ -112,15 +117,18 @@ iac-gen template --from-stack my-existing-stack
 ## Important Notes
 
 ### Resource Limits
+
 - AWS CloudFormation supports a maximum of 500 resources per template
 - The tool will warn when your scan contains more than 500 resources
 - Template generation will fail if you try to process more than 500 resources
 
 ### Stack-Managed Resources
+
 - Resources already managed by CloudFormation stacks are automatically filtered out
 - The tool shows how many stack-managed resources were excluded
 
 ### Scan Status
+
 - Only `COMPLETE` scans can be used for resource extraction
 - The tool will error if you select a scan that is still `IN_PROGRESS` or `FAILED`
 
@@ -164,20 +172,25 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Troubleshooting
 
 ### "No scans found" error
+
 - Ensure you have run at least one scan using `iac-gen resources --new-scan`
 - Check that you're in the correct AWS region
 
 ### "Selected scan is in IN_PROGRESS status" error
+
 - Wait for the scan to complete (usually takes a few minutes)
 - Resource scans must be in `COMPLETE` status to extract resources
 
 ### "Resources file contains X resources, which exceeds the AWS limit of 500" error
+
 - Filter your resources before generating a template
 - Consider splitting resources into multiple templates
 - Remove unnecessary resource types from the JSON file
 
 ### AWS Permissions
+
 Ensure your AWS credentials have the following permissions:
+
 - `cloudformation:StartResourceScan`
 - `cloudformation:DescribeResourceScan`
 - `cloudformation:ListResourceScans`
