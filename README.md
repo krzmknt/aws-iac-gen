@@ -8,12 +8,12 @@ AWS Infrastructure as Code Generator - A CLI tool for generating CloudFormation 
 
 ## Features
 
-- = **Resource Scanning**: Scan your AWS account for existing resources
-- =Ë **Resource Discovery**: List and select from previous resource scans
-- <× **Template Generation**: Convert discovered resources into CloudFormation templates
-- =« **Stack Filtering**: Automatically excludes resources managed by existing CloudFormation stacks
-- ¡ **Real-time Progress**: Visual feedback with spinners during long operations
--    **Resource Limits**: Built-in warnings and errors for AWS limits (500 resources per template)
+- **Resource Scanning**: Scan your AWS account for existing resources
+- **Resource Discovery**: List and select from previous resource scans
+- **Template Generation**: Convert discovered resources into CloudFormation templates
+- **Stack Filtering**: Automatically excludes resources managed by existing CloudFormation stacks
+- **Real-time Progress**: Visual feedback with spinners during long operations
+- **Resource Limits**: Built-in warnings and errors for AWS limits (500 resources per template)
 
 ## Installation
 

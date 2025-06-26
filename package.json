@@ -1,9 +1,9 @@
 {
   "name": "aws-iac-gen",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Infrastructure-as-Code generator CLI",
   "bin": {
-    "iac-gen": "dist/cli.js"
+    "aws-iac-gen": "dist/cli.js"
   },
   "type": "module",
   "scripts": {

@@ -43,7 +43,7 @@ import path from 'path';
 
 const REGION = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION || 'ap-northeast-1';
 const cfn = new CloudFormationClient({ region: REGION });
-const program = new Command().name('iac-gen').version('0.1.0');
+const program = new Command().name('aws-iac-gen').version('0.1.1');
 
 //
 // ─── UTILITIES ────────────────────────────────────────────────────────────────
@@ -165,11 +165,13 @@ program
         })),
       });
       scanId = selectedScanId;
-      
+
       // Check if selected scan is COMPLETE
-      const selectedScan = scans.find(s => s.id === scanId);
+      const selectedScan = scans.find((s) => s.id === scanId);
       if (selectedScan && selectedScan.status !== 'COMPLETE') {
-        console.error(`Error: Selected scan is in ${selectedScan.status} status. Only COMPLETE scans can be used.`);
+        console.error(
+          `Error: Selected scan is in ${selectedScan.status} status. Only COMPLETE scans can be used.`,
+        );
         process.exit(1);
       }
     }
@@ -198,7 +200,9 @@ program
 
     // Warn if resources exceed 500
     if (cleanedResources.length > 500) {
-      console.warn(`\n⚠️  Warning: You have ${cleanedResources.length} resources, which exceeds the limit of 500 for template generation.`);
+      console.warn(
+        `\n⚠️  Warning: You have ${cleanedResources.length} resources, which exceeds the limit of 500 for template generation.`,
+      );
       console.warn('   Consider filtering resources or splitting them into multiple templates.\n');
     }
 
@@ -232,10 +236,12 @@ program
         console.error('Resource list is empty.');
         return;
       }
-      
+
       // Check if resources exceed 500
       if (resources.length > 500) {
-        console.error(`Error: The resources file contains ${resources.length} resources, which exceeds the AWS limit of 500.`);
+        console.error(
+          `Error: The resources file contains ${resources.length} resources, which exceeds the AWS limit of 500.`,
+        );
         console.error('Please reduce the number of resources before generating a template.');
         process.exit(1);
       }
@@ -243,7 +249,7 @@ program
 
     const name = `iacgen-${Date.now()}`;
     let GeneratedTemplateId: string | undefined;
-    
+
     try {
       const result = await cfn.send(
         new CreateGeneratedTemplateCommand({
@@ -268,7 +274,9 @@ program
       await pollGeneratedTemplate(GeneratedTemplateId);
     } catch (error: any) {
       if (error.message?.includes('Resources') && error.message?.includes('500')) {
-        console.error('Error: Failed to create template - AWS CloudFormation supports a maximum of 500 resources per template.');
+        console.error(
+          'Error: Failed to create template - AWS CloudFormation supports a maximum of 500 resources per template.',
+        );
         console.error('Please reduce the number of resources and try again.');
       } else {
         console.error('Error creating template:', error.message || error);
@@ -279,11 +287,11 @@ program
     const { TemplateBody } = await cfn.send(
       new GetGeneratedTemplateCommand({ GeneratedTemplateName: GeneratedTemplateId }),
     );
-    
+
     // Ask for file confirmation just before saving
     const outFile = await confirmPath(output);
     if (!outFile) return;
-    
+
     await fs.writeFile(outFile, TemplateBody || '');
     console.log(`✓ Template saved → ${outFile}`);
   });
