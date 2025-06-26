@@ -45,7 +45,7 @@ import path from 'path';
 
 const REGION = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION || 'ap-northeast-1';
 const cfn = new CloudFormationClient({ region: REGION });
-const program = new Command().name('aws-iac-gen').version('0.2.1');
+const program = new Command().name('aws-iac-gen').version('0.2.2');
 
 //
 // ─── UTILITIES ────────────────────────────────────────────────────────────────
