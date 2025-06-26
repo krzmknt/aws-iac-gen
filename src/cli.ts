@@ -33,6 +33,8 @@ import {
   CreateGeneratedTemplateCommand,
   DescribeGeneratedTemplateCommand,
   GetGeneratedTemplateCommand,
+  GeneratedTemplateDeletionPolicy,
+  GeneratedTemplateUpdateReplacePolicy,
   paginateListResourceScanResources,
   paginateListResourceScans,
   type ResourceDefinition,
@@ -266,6 +268,10 @@ program
                 ),
               }
             : {}),
+          TemplateConfiguration: {
+            DeletionPolicy: GeneratedTemplateDeletionPolicy.DELETE,
+            UpdateReplacePolicy: GeneratedTemplateUpdateReplacePolicy.DELETE,
+          },
         }),
       );
       GeneratedTemplateId = result.GeneratedTemplateId;
