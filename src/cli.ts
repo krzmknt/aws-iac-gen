@@ -229,24 +229,22 @@ program
   .option('-o, --output <file>', 'output template file', 'template.json')
   .option('--from-stack <stack>', 'use an existing stack as the template base')
   .action(async ({ input, output, fromStack }) => {
-    // Read resources file unless fromStack was supplied
+    // Read resources file
     let resources: ScannedResource[] | undefined;
-    if (!fromStack) {
-      const data = await fs.readFile(path.resolve(process.cwd(), input), 'utf-8');
-      resources = JSON.parse(data);
-      if (!Array.isArray(resources) || resources.length === 0) {
-        console.error('Resource list is empty.');
-        return;
-      }
+    const data = await fs.readFile(path.resolve(process.cwd(), input), 'utf-8');
+    resources = JSON.parse(data);
+    if (!Array.isArray(resources) || resources.length === 0) {
+      console.error('Resource list is empty.');
+      return;
+    }
 
-      // Check if resources exceed 500
-      if (resources.length > 500) {
-        console.error(
-          `Error: The resources file contains ${resources.length} resources, which exceeds the AWS limit of 500.`,
-        );
-        console.error('Please reduce the number of resources before generating a template.');
-        process.exit(1);
-      }
+    // Check if resources exceed 500
+    if (resources.length > 500) {
+      console.error(
+        `Error: The resources file contains ${resources.length} resources, which exceeds the AWS limit of 500.`,
+      );
+      console.error('Please reduce the number of resources before generating a template.');
+      process.exit(1);
     }
 
     const name = `iacgen-${Date.now()}`;
@@ -257,17 +255,13 @@ program
         new CreateGeneratedTemplateCommand({
           GeneratedTemplateName: name,
           ...(fromStack ? { StackName: fromStack } : {}),
-          ...(resources
-            ? {
-                Resources: resources.map(
-                  (r) =>
-                    ({
-                      ResourceIdentifier: r.ResourceIdentifier ?? {},
-                      ResourceType: r.ResourceType ?? '',
-                    }) satisfies ResourceDefinition,
-                ),
-              }
-            : {}),
+          Resources: resources.map(
+            (r) =>
+              ({
+                ResourceIdentifier: r.ResourceIdentifier ?? {},
+                ResourceType: r.ResourceType ?? '',
+              }) satisfies ResourceDefinition,
+          ),
           TemplateConfiguration: {
             DeletionPolicy: GeneratedTemplateDeletionPolicy.DELETE,
             UpdateReplacePolicy: GeneratedTemplateUpdateReplacePolicy.DELETE,
